@@ -8,89 +8,63 @@ struct Stack
     int size;
 };
 
-struct Stack *initialize_stack(int n);
-int is_full(struct Stack *stack);
-void push_stack(int val, struct Stack **stack);
-void print_stack(struct Stack *stack);
-int pop_stack(struct Stack **stack);
-int top_stack(struct Stack **stack);
-
-int main()
+struct Stack *initialize_stack(int n)
 {
-    struct Stack *my_stack = initialize_stack(5);
-    push_stack(1, &my_stack);
-    push_stack(2, &my_stack);
-    push_stack(3, &my_stack);
-    print_stack(my_stack);
-    printf("Popped: %d\n", pop_stack(&my_stack));
-    printf("Top: %d\n", top_stack(&my_stack));
-    printf("Popped: %d\n", pop_stack(&my_stack));
-    print_stack(my_stack);
+    struct Stack *s = (struct Stack *)malloc(sizeof(struct Stack));
+    s->stack = (int *)malloc(n * sizeof(int));
+    s->front = -1;
+    s->size = n;
+    return s;
 }
 
-void print_stack(struct Stack *stack)
+void print_stack(struct Stack *s)
 {
     printf("Stack: ");
-    for (int i = 0; i <= stack->front; i++)
-    {
-        printf("%d ", stack->stack[i]);
-    }
+    for (int i = 0; i <= s->front; i++)
+        printf("%d ", s->stack[i]);
     printf("\n");
 }
 
-struct Stack *initialize_stack(int n)
+void push_stack(int val, struct Stack *s)
 {
-    struct Stack *new_stack = (struct Stack *)malloc(sizeof(struct Stack));
-    new_stack->stack = (int *)malloc(n * sizeof(int));
-    new_stack->front = -1;
-    new_stack->size = n;
-    return new_stack;
-}
-
-int is_full(struct Stack *stack)
-{
-    if (stack->front == stack->size - 1)
-        return 1;
-    return 0;
-}
-
-int is_empty(struct Stack *stack)
-{
-    if (stack->front == -1)
-        return 1;
-    return 0;
-}
-
-void push_stack(int val, struct Stack **stack)
-{
-    if (is_full(*stack))
+    if (s->front == s->size - 1)
     {
-        printf("Stack Overflow");
+        printf("Stack Overflow\n");
         return;
     }
-    (*stack)->front++;
-    (*stack)->stack[(*stack)->front] = val;
+    s->stack[++s->front] = val;
 }
 
-int pop_stack(struct Stack **stack)
+int pop_stack(struct Stack *s)
 {
-    if (is_empty(*stack))
+    if (s->front == -1)
     {
-        printf("Stack Underflow");
+        printf("Stack Underflow\n");
         return -1;
     }
-    int val = (*stack)->stack[(*stack)->front];
-    (*stack)->front--;
-    return val;
+    return s->stack[s->front--];
 }
 
-int top_stack(struct Stack **stack)
+int top_stack(struct Stack *s)
 {
-    if (is_empty(*stack))
+    if (s->front == -1)
     {
-        printf("Stack Empty");
+        printf("Stack Empty\n");
         return -1;
     }
-    int val = (*stack)->stack[(*stack)->front];
-    return val;
+    return s->stack[s->front];
+}
+
+int main()
+{
+    struct Stack *s = initialize_stack(5);
+    push_stack(1, s);
+    push_stack(2, s);
+    push_stack(3, s);
+    print_stack(s);
+    printf("Popped: %d\n", pop_stack(s));
+    printf("Top: %d\n", top_stack(s));
+    printf("Popped: %d\n", pop_stack(s));
+    print_stack(s);
+    return 0;
 }
